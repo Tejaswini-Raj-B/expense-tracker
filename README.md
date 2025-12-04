@@ -30,8 +30,11 @@ A lightweight Python Flask web app to help users track daily expenses, manage mo
 
 
 expense-tracker/
+
 ├── app.py               # Main Flask application
+
 ├── db.py                # Database connection & setup
+
 ├── templates/           # HTML templates
 │   ├── index.html
 │   ├── add_expense.html
