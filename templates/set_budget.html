@@ -1,0 +1,58 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Set Budget</title>
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <h1>Set Budget</h1>
+  <nav>
+    <a href="{{ url_for('index') }}">Home</a>
+    <a href="{{ url_for('add_expense') }}">Add Expense</a>
+    <a href="{{ url_for('set_budget') }}">Set Budget</a>
+    <a href="{{ url_for('report') }}">Monthly Report</a>
+  </nav>
+  <hr>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, msg in messages %}
+        <div class="flash {{ category }}">{{ msg }}</div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  <form method="post" action="{{ url_for('set_budget') }}">
+    <div>
+      <label for="category">Category</label>
+      <input id="category" name="category" type="text" required placeholder="e.g., Food">
+    </div>
+    <div>
+      <label for="amount">Monthly Budget</label>
+      <input id="amount" name="amount" type="text" required placeholder="e.g., 200.00">
+    </div>
+    <button type="submit">Set Budget</button>
+  </form>
+
+  <h2>Current Budgets</h2>
+  {% if budgets %}
+    <table>
+      <tr><th>Category</th><th>Monthly Budget</th><th>Action</th></tr>
+      {% for b in budgets %}
+        <tr>
+          <td>{{ b['category'] }}</td>
+          <td>{{ '%.2f'|format(b['monthly_budget']) }}</td>
+          <td>
+            <form method="post" action="{{ url_for('delete_budget', budget_id=b['id']) }}" style="display:inline;">
+              <button type="submit" onclick="return confirm('Delete this budget?');">Delete</button>
+            </form>
+          </td>
+        </tr>
+      {% endfor %}
+    </table>
+  {% else %}
+    <p>No budgets set yet.</p>
+  {% endif %}
+</body>
+</html>

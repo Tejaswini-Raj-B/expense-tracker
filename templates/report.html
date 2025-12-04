@@ -1,0 +1,89 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Monthly Report</title>
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <h1>Monthly Report</h1>
+  <nav>
+    <a href="{{ url_for('index') }}">Home</a>
+    <a href="{{ url_for('add_expense') }}">Add Expense</a>
+    <a href="{{ url_for('set_budget') }}">Set Budget</a>
+    <a href="{{ url_for('report') }}">Monthly Report</a>
+  </nav>
+  <hr>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, msg in messages %}
+        <div class="flash {{ category }}">{{ msg }}</div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  <form method="get" action="{{ url_for('report') }}">
+    <label for="month">Month (YYYY-MM)</label>
+    <input id="month" name="month" type="text" value="{{ month }}" placeholder="YYYY-MM">
+    <button type="submit">View</button>
+  </form>
+
+  <h2>Total spent: {{ '%.2f'|format(total_spent) }}</h2>
+
+  <!-- Table of individual expenses -->
+  <h3>Expenses</h3>
+  {% if expenses %}
+    <table>
+      <tr>
+        <th>Date</th>
+        <th>Category</th>
+        <th>Amount</th>
+        <th>Action</th>
+      </tr>
+      {% for e in expenses %}
+      <tr>
+        <td>{{ e['date'] }}</td>
+        <td>{{ e['category'] }}</td>
+        <td>{{ '%.2f'|format(e['amount']) }}</td>
+        <td>
+          <form method="post" action="{{ url_for('delete_expense', expense_id=e['id']) }}" style="display:inline;">
+            <button type="submit" onclick="return confirm('Are you sure you want to delete this expense?');">Delete</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </table>
+  {% else %}
+    <p>No expenses for this month.</p>
+  {% endif %}
+
+  <!-- Summary by category -->
+  <h3>Summary by Category</h3>
+  {% if data %}
+    <table>
+      <tr>
+        <th>Category</th>
+        <th>Spent</th>
+        <th>Budget</th>
+        <th>Status</th>
+      </tr>
+      {% for d in data %}
+      <tr>
+        <td>{{ d['category'] }}</td>
+        <td>{{ '%.2f'|format(d['spent']) }}</td>
+        <td>{{ d['budget'] is not none and ('%.2f'|format(d['budget'])) or '-' }}</td>
+        <td>
+          {% if d['status'] == 'OK' %}<span class="status-ok">OK</span>
+          {% elif d['status'] == 'Low' %}<span class="status-low">Low</span>
+          {% else %}<span class="status-exceeded">Exceeded</span>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </table>
+  {% else %}
+    <p>No data to show.</p>
+  {% endif %}
+</body>
+</html>
