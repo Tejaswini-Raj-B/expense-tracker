@@ -36,14 +36,23 @@ expense-tracker/
 ├── db.py                # Database connection & setup
 
 ├── templates/           # HTML templates
+
 │   ├── index.html
+
 │   ├── add_expense.html
+
 │   ├── set_budget.html
+
 │   └── report.html
+
 ├── static/
+
 │   └── style.css        # Shared CSS for all pages
+
 ├── requirements.txt     # Python dependencies
+
 ├── Dockerfile           # Docker build instructions
+
 └── expenses.db          # SQLite database (auto-created)
 
 
